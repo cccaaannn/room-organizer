@@ -1,7 +1,7 @@
 import React from "react";
 
-import Tooltip from "@/components/tooltip";
 import { Button } from "@/components/shadcn/ui/button";
+import Tooltip from "@/components/tooltip";
 
 
 interface Props extends React.ComponentProps<typeof Button> {
