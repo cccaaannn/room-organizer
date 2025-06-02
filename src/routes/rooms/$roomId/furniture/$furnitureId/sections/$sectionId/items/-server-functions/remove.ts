@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 import db from "@/db/init";
-import { items, itemsRelatedItems, itemsTags } from "@/db/schema";
+import { items, itemsTags, relatedItems } from "@/db/schema";
 
 
 const RemoveItemScheme = z.object({
@@ -24,8 +24,8 @@ const removeItem = createServerFn({ method: "POST", response: "full" })
 		await db.delete(itemsTags)
 			.where(eq(itemsTags.itemId, ctx.data.id));
 
-		await db.delete(itemsRelatedItems)
-			.where(eq(itemsRelatedItems.itemId, ctx.data.id));
+		await db.delete(relatedItems)
+			.where(eq(relatedItems.itemId, ctx.data.id));
 
 		await db.delete(items)
 			.where(eq(items.id, ctx.data.id));
