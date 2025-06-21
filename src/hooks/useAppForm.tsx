@@ -4,6 +4,7 @@ import FormButton from "@/components/form/form-button";
 import FormColorPicker from "@/components/form/form-color-picker";
 import FormMultiSelect from "@/components/form/form-multi-select";
 import FormNumberTextField from "@/components/form/form-number-text-field";
+import FormPasswordTextField from "@/components/form/form-password-text-field";
 import FormSelect from "@/components/form/form-select";
 import FormSlider from "@/components/form/form-slider";
 import FormSwitch from "@/components/form/form-switch";
@@ -19,6 +20,7 @@ export const { useAppForm } = createFormHook({
 	fieldComponents: {
 		TextField: FormTextField,
 		NumberTextField: FormNumberTextField,
+		PasswordTextField: FormPasswordTextField,
 		ColorPicker: FormColorPicker,
 		TextArea: FormTextArea,
 		Select: FormSelect,
