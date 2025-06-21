@@ -74,8 +74,12 @@ const RelatedItemSection = (props: Props) => {
 									<Button asChild variant="link" onClick={linkClick}>
 										<Link
 											key="sections"
-											to="/rooms/$roomId/furniture/$furnitureId/sections"
-											params={{ roomId: relatedItemMap.relatedItem.section.furniture.roomId, furnitureId: relatedItemMap.relatedItem.section.furnitureId }}
+											to="/rooms/$roomId/furniture/$furnitureId/sections/$sectionId/items"
+											params={{
+												roomId: relatedItemMap.relatedItem.section.furniture.roomId,
+												furnitureId: relatedItemMap.relatedItem.section.furnitureId,
+												sectionId: relatedItemMap.relatedItem.section.id
+											}}
 										>
 											{relatedItemMap.relatedItem.section.name}
 										</Link>
@@ -86,8 +90,11 @@ const RelatedItemSection = (props: Props) => {
 									<Button asChild variant="link" onClick={linkClick}>
 										<Link
 											key="furniture"
-											to="/rooms/$roomId/furniture"
-											params={{ roomId: relatedItemMap.relatedItem.section.furniture.roomId }}
+											to="/rooms/$roomId/furniture/$furnitureId/sections"
+											params={{
+												roomId: relatedItemMap.relatedItem.section.furniture.roomId,
+												furnitureId: relatedItemMap.relatedItem.section.furnitureId
+											}}
 										>
 											{relatedItemMap.relatedItem.section.furniture.name}
 										</Link>
@@ -98,7 +105,10 @@ const RelatedItemSection = (props: Props) => {
 									<Button asChild variant="link" onClick={linkClick}>
 										<Link
 											key="room"
-											to="/rooms"
+											to="/rooms/$roomId/furniture"
+											params={{
+												roomId: relatedItemMap.relatedItem.section.furniture.roomId
+											}}
 										>
 											{relatedItemMap.relatedItem.section.furniture.room.name}
 										</Link>
