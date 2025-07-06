@@ -15,6 +15,8 @@ import { Route as IndexImport } from './routes/index'
 import { Route as TagsIndexImport } from './routes/tags/index'
 import { Route as RoomsIndexImport } from './routes/rooms/index'
 import { Route as ItemsIndexImport } from './routes/items/index'
+import { Route as AuthSignupIndexImport } from './routes/auth/signup/index'
+import { Route as AuthSigninIndexImport } from './routes/auth/signin/index'
 import { Route as RoomsRoomIdFurnitureIndexImport } from './routes/rooms/$roomId/furniture/index'
 import { Route as RoomsRoomIdFurnitureFurnitureIdSectionsIndexImport } from './routes/rooms/$roomId/furniture/$furnitureId/sections/index'
 import { Route as RoomsRoomIdFurnitureFurnitureIdSectionsSectionIdItemsIndexImport } from './routes/rooms/$roomId/furniture/$furnitureId/sections/$sectionId/items/index'
@@ -42,6 +44,18 @@ const RoomsIndexRoute = RoomsIndexImport.update({
 const ItemsIndexRoute = ItemsIndexImport.update({
   id: '/items/',
   path: '/items/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthSignupIndexRoute = AuthSignupIndexImport.update({
+  id: '/auth/signup/',
+  path: '/auth/signup/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthSigninIndexRoute = AuthSigninIndexImport.update({
+  id: '/auth/signin/',
+  path: '/auth/signin/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -97,6 +111,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TagsIndexImport
       parentRoute: typeof rootRoute
     }
+    '/auth/signin/': {
+      id: '/auth/signin/'
+      path: '/auth/signin'
+      fullPath: '/auth/signin'
+      preLoaderRoute: typeof AuthSigninIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/signup/': {
+      id: '/auth/signup/'
+      path: '/auth/signup'
+      fullPath: '/auth/signup'
+      preLoaderRoute: typeof AuthSignupIndexImport
+      parentRoute: typeof rootRoute
+    }
     '/rooms/$roomId/furniture/': {
       id: '/rooms/$roomId/furniture/'
       path: '/rooms/$roomId/furniture'
@@ -128,6 +156,8 @@ export interface FileRoutesByFullPath {
   '/items': typeof ItemsIndexRoute
   '/rooms': typeof RoomsIndexRoute
   '/tags': typeof TagsIndexRoute
+  '/auth/signin': typeof AuthSigninIndexRoute
+  '/auth/signup': typeof AuthSignupIndexRoute
   '/rooms/$roomId/furniture': typeof RoomsRoomIdFurnitureIndexRoute
   '/rooms/$roomId/furniture/$furnitureId/sections': typeof RoomsRoomIdFurnitureFurnitureIdSectionsIndexRoute
   '/rooms/$roomId/furniture/$furnitureId/sections/$sectionId/items': typeof RoomsRoomIdFurnitureFurnitureIdSectionsSectionIdItemsIndexRoute
@@ -138,6 +168,8 @@ export interface FileRoutesByTo {
   '/items': typeof ItemsIndexRoute
   '/rooms': typeof RoomsIndexRoute
   '/tags': typeof TagsIndexRoute
+  '/auth/signin': typeof AuthSigninIndexRoute
+  '/auth/signup': typeof AuthSignupIndexRoute
   '/rooms/$roomId/furniture': typeof RoomsRoomIdFurnitureIndexRoute
   '/rooms/$roomId/furniture/$furnitureId/sections': typeof RoomsRoomIdFurnitureFurnitureIdSectionsIndexRoute
   '/rooms/$roomId/furniture/$furnitureId/sections/$sectionId/items': typeof RoomsRoomIdFurnitureFurnitureIdSectionsSectionIdItemsIndexRoute
@@ -149,6 +181,8 @@ export interface FileRoutesById {
   '/items/': typeof ItemsIndexRoute
   '/rooms/': typeof RoomsIndexRoute
   '/tags/': typeof TagsIndexRoute
+  '/auth/signin/': typeof AuthSigninIndexRoute
+  '/auth/signup/': typeof AuthSignupIndexRoute
   '/rooms/$roomId/furniture/': typeof RoomsRoomIdFurnitureIndexRoute
   '/rooms/$roomId/furniture/$furnitureId/sections/': typeof RoomsRoomIdFurnitureFurnitureIdSectionsIndexRoute
   '/rooms/$roomId/furniture/$furnitureId/sections/$sectionId/items/': typeof RoomsRoomIdFurnitureFurnitureIdSectionsSectionIdItemsIndexRoute
@@ -161,6 +195,8 @@ export interface FileRouteTypes {
     | '/items'
     | '/rooms'
     | '/tags'
+    | '/auth/signin'
+    | '/auth/signup'
     | '/rooms/$roomId/furniture'
     | '/rooms/$roomId/furniture/$furnitureId/sections'
     | '/rooms/$roomId/furniture/$furnitureId/sections/$sectionId/items'
@@ -170,6 +206,8 @@ export interface FileRouteTypes {
     | '/items'
     | '/rooms'
     | '/tags'
+    | '/auth/signin'
+    | '/auth/signup'
     | '/rooms/$roomId/furniture'
     | '/rooms/$roomId/furniture/$furnitureId/sections'
     | '/rooms/$roomId/furniture/$furnitureId/sections/$sectionId/items'
@@ -179,6 +217,8 @@ export interface FileRouteTypes {
     | '/items/'
     | '/rooms/'
     | '/tags/'
+    | '/auth/signin/'
+    | '/auth/signup/'
     | '/rooms/$roomId/furniture/'
     | '/rooms/$roomId/furniture/$furnitureId/sections/'
     | '/rooms/$roomId/furniture/$furnitureId/sections/$sectionId/items/'
@@ -190,6 +230,8 @@ export interface RootRouteChildren {
   ItemsIndexRoute: typeof ItemsIndexRoute
   RoomsIndexRoute: typeof RoomsIndexRoute
   TagsIndexRoute: typeof TagsIndexRoute
+  AuthSigninIndexRoute: typeof AuthSigninIndexRoute
+  AuthSignupIndexRoute: typeof AuthSignupIndexRoute
   RoomsRoomIdFurnitureIndexRoute: typeof RoomsRoomIdFurnitureIndexRoute
   RoomsRoomIdFurnitureFurnitureIdSectionsIndexRoute: typeof RoomsRoomIdFurnitureFurnitureIdSectionsIndexRoute
   RoomsRoomIdFurnitureFurnitureIdSectionsSectionIdItemsIndexRoute: typeof RoomsRoomIdFurnitureFurnitureIdSectionsSectionIdItemsIndexRoute
@@ -200,6 +242,8 @@ const rootRouteChildren: RootRouteChildren = {
   ItemsIndexRoute: ItemsIndexRoute,
   RoomsIndexRoute: RoomsIndexRoute,
   TagsIndexRoute: TagsIndexRoute,
+  AuthSigninIndexRoute: AuthSigninIndexRoute,
+  AuthSignupIndexRoute: AuthSignupIndexRoute,
   RoomsRoomIdFurnitureIndexRoute: RoomsRoomIdFurnitureIndexRoute,
   RoomsRoomIdFurnitureFurnitureIdSectionsIndexRoute:
     RoomsRoomIdFurnitureFurnitureIdSectionsIndexRoute,
@@ -221,6 +265,8 @@ export const routeTree = rootRoute
         "/items/",
         "/rooms/",
         "/tags/",
+        "/auth/signin/",
+        "/auth/signup/",
         "/rooms/$roomId/furniture/",
         "/rooms/$roomId/furniture/$furnitureId/sections/",
         "/rooms/$roomId/furniture/$furnitureId/sections/$sectionId/items/"
@@ -237,6 +283,12 @@ export const routeTree = rootRoute
     },
     "/tags/": {
       "filePath": "tags/index.tsx"
+    },
+    "/auth/signin/": {
+      "filePath": "auth/signin/index.tsx"
+    },
+    "/auth/signup/": {
+      "filePath": "auth/signup/index.tsx"
     },
     "/rooms/$roomId/furniture/": {
       "filePath": "rooms/$roomId/furniture/index.tsx"
