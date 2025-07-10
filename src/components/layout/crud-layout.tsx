@@ -2,7 +2,7 @@ import type React from "react";
 
 import { Plus } from "lucide-react";
 
-import { Button } from "@/components/shadcn/ui/button";
+import TooltipButton from "@/components/button/tooltip-button";
 import type SimpleBreadcrumb from "@/components/simple-breadcrumb";
 
 
@@ -21,12 +21,13 @@ const CrudLayout = (props: Props) => {
 					{props.header}
 				</h1>
 
-				<Button
+				<TooltipButton
 					variant="default"
+					tooltip="Add new"
 					onClick={props.onAdd}
 				>
 					<Plus />
-				</Button>
+				</TooltipButton>
 			</div>
 
 			{props.breadcrumb}
