@@ -1,13 +1,15 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { desc, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 
 import db from "@/db/init";
-import { publicProcedure } from "@/trpc/init";
+import { rooms } from "@/db/schema";
+import { protectedProcedure } from "@/trpc/init";
 
 
 export const roomRouter = {
-	getAll: publicProcedure.query(() =>
+	getAll: protectedProcedure.query(opts =>
 		db.query.rooms.findMany({
+			where: eq(rooms.userId, opts.ctx.session!.user.id),
 			orderBy: o => [desc(sql`coalesce(${o.updatedAt}, ${o.createdAt})`)]
 		})
 	)
