@@ -1,34 +1,41 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import db from "@/db/init";
 import { furniture } from "@/db/schema";
-import { publicProcedure } from "@/trpc/init";
+import { protectedProcedure } from "@/trpc/init";
 
 
 export const furnitureRouter = {
-	getAll: publicProcedure.query(() =>
+	getAll: protectedProcedure.query(opts =>
 		db.query.furniture.findMany({
+			where: eq(furniture.userId, opts.ctx.session!.user.id),
 			orderBy: o => [desc(sql`coalesce(${o.updatedAt}, ${o.createdAt})`)]
 		})
 	),
-	getByRoomId: publicProcedure
+	getByRoomId: protectedProcedure
 		.input(z.string())
 		.query(opts =>
 			db.query.furniture.findMany({
-				where: eq(furniture.roomId, opts.input),
+				where: and(
+					eq(furniture.userId, opts.ctx.session!.user.id),
+					eq(furniture.roomId, opts.input)
+				),
 				with: {
 					room: true
 				},
 				orderBy: o => [desc(sql`coalesce(${o.updatedAt}, ${o.createdAt})`)]
 			})
 		),
-	getById: publicProcedure
+	getById: protectedProcedure
 		.input(z.string())
 		.query(opts =>
 			db.query.furniture.findMany({
-				where: eq(furniture.roomId, opts.input),
+				where: and(
+					eq(furniture.userId, opts.ctx.session!.user.id),
+					eq(furniture.roomId, opts.input)
+				),
 				with: {
 					room: true
 				},
