@@ -1,6 +1,8 @@
 import { relations } from "drizzle-orm";
 import { pgTable, primaryKey, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
+import { user } from "@/db/auth-schema";
+
 
 const timestamps = {
 	updatedAt: timestamp("updated_at"),
@@ -15,7 +17,8 @@ const baseEntity = {
 export const rooms = pgTable("rooms", {
 	...baseEntity,
 	name: varchar("name", { length: 255 }).notNull(),
-	description: text("description").notNull()
+	description: text("description").notNull(),
+	userId: text("user_id").notNull().references(() => user.id)
 });
 
 export const roomsRelations = relations(rooms, ({ many }) => ({
@@ -26,7 +29,8 @@ export const furniture = pgTable("furniture", {
 	...baseEntity,
 	name: varchar("name", { length: 255 }).notNull(),
 	description: text("description").notNull(),
-	roomId: uuid("room_id").notNull().references(() => rooms.id)
+	roomId: uuid("room_id").notNull().references(() => rooms.id),
+	userId: text("user_id").notNull().references(() => user.id)
 });
 
 export const furnitureRelations = relations(furniture, ({ one }) => ({
@@ -40,7 +44,8 @@ export const sections = pgTable("sections", {
 	...baseEntity,
 	name: varchar("name", { length: 255 }).notNull(),
 	description: text("description").notNull(),
-	furnitureId: uuid("furniture_id").notNull()
+	furnitureId: uuid("furniture_id").notNull(),
+	userId: text("user_id").notNull().references(() => user.id)
 });
 
 export const sectionsRelations = relations(sections, ({ one }) => ({
@@ -54,7 +59,8 @@ export const tags = pgTable("tags", {
 	...baseEntity,
 	name: varchar("name", { length: 255 }).notNull(),
 	description: text("description").notNull(),
-	color: varchar("color", { length: 255 }).notNull()
+	color: varchar("color", { length: 255 }).notNull(),
+	userId: text("user_id").notNull().references(() => user.id)
 });
 
 export const tagsRelations = relations(tags, ({ many }) => ({
@@ -65,7 +71,8 @@ export const items = pgTable("items", {
 	...baseEntity,
 	name: varchar("name", { length: 255 }).notNull(),
 	description: text("description").notNull(),
-	sectionId: uuid("section_id").notNull().references(() => sections.id)
+	sectionId: uuid("section_id").notNull().references(() => sections.id),
+	userId: text("user_id").notNull().references(() => user.id)
 });
 
 export const itemsRelations = relations(items, ({ one, many }) => ({
