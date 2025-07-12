@@ -1,13 +1,15 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { desc, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 
 import db from "@/db/init";
-import { publicProcedure } from "@/trpc/init";
+import { tags } from "@/db/schema";
+import { protectedProcedure } from "@/trpc/init";
 
 
 export const tagRouter = {
-	getAll: publicProcedure.query(() =>
+	getAll: protectedProcedure.query(opts =>
 		db.query.tags.findMany({
+			where: eq(tags.userId, opts.ctx.session!.user.id),
 			orderBy: rooms => [desc(sql`coalesce(${rooms.updatedAt}, ${rooms.createdAt})`)]
 		})
 	)
