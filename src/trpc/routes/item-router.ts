@@ -1,19 +1,24 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import db from "@/db/init";
 import { items } from "@/db/schema";
-import { publicProcedure } from "@/trpc/init";
+import { protectedProcedure } from "@/trpc/init";
 
 
 export const itemRouter = {
-	getAll: publicProcedure.query(() =>
+	getAll: protectedProcedure.query(opts =>
 		db.query.items.findMany({
+			where: eq(items.userId, opts.ctx.session!.user.id),
 			with: {
 				section: {
 					with: {
-						furniture: true
+						furniture: {
+							with: {
+								room: true
+							}
+						}
 					}
 				},
 				itemsTags: {
@@ -26,11 +31,14 @@ export const itemRouter = {
 			orderBy: o => [desc(sql`coalesce(${o.updatedAt}, ${o.createdAt})`)]
 		})
 	),
-	getBySectionId: publicProcedure
+	getBySectionId: protectedProcedure
 		.input(z.string())
 		.query(opts =>
 			db.query.items.findMany({
-				where: eq(items.sectionId, opts.input),
+				where: and(
+					eq(items.userId, opts.ctx.session!.user.id),
+					eq(items.sectionId, opts.input)
+				),
 				with: {
 					section: {
 						with: {
@@ -47,11 +55,14 @@ export const itemRouter = {
 				orderBy: o => [desc(sql`coalesce(${o.updatedAt}, ${o.createdAt})`)]
 			})
 		),
-	getById: publicProcedure
+	getById: protectedProcedure
 		.input(z.string())
 		.query(opts =>
 			db.query.items.findFirst({
-				where: eq(items.id, opts.input),
+				where: and(
+					eq(items.userId, opts.ctx.session!.user.id),
+					eq(items.id, opts.input)
+				),
 				with: {
 					section: {
 						with: {
