@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import db from "@/db/init";
 import { rooms } from "@/db/schema";
+import { currentUserMiddleware } from "@/middlewares/current-user-middleware";
 
 
 const CreateRoomScheme = z.object({
@@ -13,10 +14,12 @@ const CreateRoomScheme = z.object({
 
 const createRoom = createServerFn({ method: "POST", response: "full" })
 	.validator(room => CreateRoomScheme.parse(room))
+	.middleware([currentUserMiddleware])
 	.handler(async ctx => {
 		const entity: typeof rooms.$inferInsert = {
 			name: ctx.data.name,
-			description: ctx.data.description
+			description: ctx.data.description,
+			userId: ctx.context.user.id
 		};
 
 		const existingEntity = await db.select()
