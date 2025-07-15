@@ -1,9 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import db from "@/db/init";
 import { rooms } from "@/db/schema";
+import { currentUserMiddleware } from "@/middlewares/current-user-middleware";
 
 
 const UpdateRoomScheme = z.object({
@@ -14,10 +15,14 @@ const UpdateRoomScheme = z.object({
 
 const updateRoom = createServerFn({ method: "POST", response: "full" })
 	.validator(room => UpdateRoomScheme.parse(room))
+	.middleware([currentUserMiddleware])
 	.handler(async ctx => {
 		const entity = await db.select()
 			.from(rooms)
-			.where(eq(rooms.id, ctx.data.id));
+			.where(and(
+				eq(rooms.id, ctx.data.id),
+				eq(rooms.userId, ctx.context.user.id)
+			));
 
 		if (entity.length === 0) {
 			throw new Error("Not found");
