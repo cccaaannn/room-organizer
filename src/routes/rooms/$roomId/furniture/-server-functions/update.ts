@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import db from "@/db/init";
 import { furniture } from "@/db/schema";
+import { currentUserMiddleware } from "@/middlewares/current-user-middleware";
 
 
 const UpdateFurnitureScheme = z.object({
@@ -15,10 +16,14 @@ const UpdateFurnitureScheme = z.object({
 
 const updateFurniture = createServerFn({ method: "POST", response: "full" })
 	.validator(f => UpdateFurnitureScheme.parse(f))
+	.middleware([currentUserMiddleware])
 	.handler(async ctx => {
 		const entity = await db.select()
 			.from(furniture)
-			.where(eq(furniture.id, ctx.data.id));
+			.where(and(
+				eq(furniture.id, ctx.data.id),
+				eq(furniture.userId, ctx.context.user.id)
+			));
 
 		if (entity.length === 0) {
 			throw new Error("Not found");
