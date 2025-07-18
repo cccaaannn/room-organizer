@@ -3,7 +3,8 @@ import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
 import db from "@/db/init";
-import { sections } from "@/db/schema";
+import { furniture, sections } from "@/db/schema";
+import { currentUserMiddleware } from "@/middlewares/current-user-middleware";
 
 
 const CreateSectionScheme = z.object({
@@ -14,11 +15,24 @@ const CreateSectionScheme = z.object({
 
 const createSection = createServerFn({ method: "POST", response: "full" })
 	.validator(f => CreateSectionScheme.parse(f))
+	.middleware([currentUserMiddleware])
 	.handler(async ctx => {
+		const existingFurniture = await db.select()
+			.from(furniture)
+			.where(and(
+				eq(furniture.id, ctx.data.furnitureId),
+				eq(furniture.userId, ctx.context.user.id)
+			));
+
+		if (existingFurniture.length === 0) {
+			throw new Error("Furniture not found");
+		}
+
 		const entity: typeof sections.$inferInsert = {
 			name: ctx.data.name,
 			description: ctx.data.description,
-			furnitureId: ctx.data.furnitureId
+			furnitureId: ctx.data.furnitureId,
+			userId: ctx.context.user.id
 		};
 
 		const existingEntity = await db.select()
