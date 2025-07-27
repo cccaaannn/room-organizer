@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import db from "@/db/init";
 import { tags } from "@/db/schema";
+import { currentUserMiddleware } from "@/middlewares/current-user-middleware";
 import V from "@/utils/validation";
 
 
@@ -15,11 +16,13 @@ const CreateTagScheme = z.object({
 
 const createTag = createServerFn({ method: "POST", response: "full" })
 	.validator(f => CreateTagScheme.parse(f))
+	.middleware([currentUserMiddleware])
 	.handler(async ctx => {
 		const entity: typeof tags.$inferInsert = {
 			name: ctx.data.name,
 			description: ctx.data.description,
-			color: ctx.data.color
+			color: ctx.data.color,
+			userId: ctx.context.user.id
 		};
 
 		const existingEntity = await db.select()
