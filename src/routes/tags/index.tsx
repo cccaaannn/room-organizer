@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Eye, PenLine, Trash } from "lucide-react";
 
 import TooltipButton from "@/components/button/tooltip-button";
@@ -10,6 +10,7 @@ import CrudLayout from "@/components/layout/crud-layout";
 import SimpleBreadcrumb from "@/components/simple-breadcrumb";
 import GenericTable, { type TableColumns } from "@/components/table/generic-table";
 import useModal from "@/hooks/useModal/useModal";
+import { getCurrentUser } from "@/middlewares/current-user-middleware";
 import CreateTagModal from "@/routes/tags/-components/create-tag-modal";
 import RemoveTagModal from "@/routes/tags/-components/remove-tag-modal";
 import UpdateTagModal from "@/routes/tags/-components/update-tag-modal";
@@ -20,10 +21,24 @@ import { useTRPC } from "@/trpc/react";
 export const Route = createFileRoute("/tags/")({
 	component: List,
 	errorComponent: () => <GenericError />,
+	beforeLoad: async () => {
+		const userResponse = await getCurrentUser();
+		if (userResponse.error || !userResponse.result.user) {
+			redirect({
+				to: "/auth/signin",
+				throw: true
+			});
+		}
+		return { user: userResponse.result.user };
+	},
 	loader: async ({ context }) => {
 		await context.queryClient.ensureQueryData(
 			context.trpc.tag.getAll.queryOptions()
 		);
+
+		return {
+			user: context.user
+		};
 	}
 });
 
