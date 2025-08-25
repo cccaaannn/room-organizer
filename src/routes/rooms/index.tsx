@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Armchair, Eye, PenLine, Trash } from "lucide-react";
 
 import TooltipButton from "@/components/button/tooltip-button";
@@ -10,6 +10,7 @@ import CrudLayout from "@/components/layout/crud-layout";
 import SimpleBreadcrumb from "@/components/simple-breadcrumb";
 import GenericTable, { type TableColumns } from "@/components/table/generic-table";
 import useModal from "@/hooks/useModal/useModal";
+import { getCurrentUser } from "@/middlewares/current-user-middleware";
 import CreateRoomModal from "@/routes/rooms/-components/create-room-modal";
 import RemoveRoomModal from "@/routes/rooms/-components/remove-room-modal";
 import UpdateRoomModal from "@/routes/rooms/-components/update-room-modal";
@@ -20,10 +21,24 @@ import { useTRPC } from "@/trpc/react";
 export const Route = createFileRoute("/rooms/")({
 	component: List,
 	errorComponent: () => <GenericError />,
+	beforeLoad: async () => {
+		const userResponse = await getCurrentUser();
+		if (userResponse.error || !userResponse.result.user) {
+			redirect({
+				to: "/auth/signin",
+				throw: true
+			});
+		}
+		return { user: userResponse.result.user };
+	},
 	loader: async ({ context }) => {
 		await context.queryClient.ensureQueryData(
 			context.trpc.room.getAll.queryOptions()
 		);
+
+		return {
+			user: context.user
+		};
 	}
 });
 
