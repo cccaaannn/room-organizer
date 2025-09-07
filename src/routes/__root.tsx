@@ -27,11 +27,19 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
-			{
-				name: "viewport",
-				content: "width=device-width, initial-scale=1"
-			},
-			{ title: "Room organizer" }
+			{ name: "viewport", content: "width=device-width, initial-scale=1" },
+			{ title: "Room organizer" },
+			{ property: "og:url", content: "https://cccaaannn.github.io/room-organizer" },
+			{ property: "og:type", content: "website" },
+			{ property: "og:title", content: "Room organizer" },
+			{ property: "og:description", content: "Organize your items" },
+			{ property: "og:image", content: "https://raw.githubusercontent.com/cccaaannn/room-organizer/master/public/image/icon-500x500.png" },
+			{ name: "twitter:card", content: "summary_large_image" },
+			{ property: "twitter:domain", content: "cccaaannn.github.io" },
+			{ property: "twitter:url", content: "https://cccaaannn.github.io/room-organizer" },
+			{ name: "twitter:title", content: "Room organizer" },
+			{ name: "twitter:description", content: "Organize your items" },
+			{ name: "twitter:image", content: "https://raw.githubusercontent.com/cccaaannn/room-organizer/master/public/image/icon-500x500.png" }
 		],
 		links: [
 			{ rel: "stylesheet", href: appCss }
